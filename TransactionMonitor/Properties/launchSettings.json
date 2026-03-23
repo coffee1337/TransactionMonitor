@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TransactionMonitor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "TransactionMonitor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
