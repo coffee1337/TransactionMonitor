@@ -15,12 +15,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="ViewModels\RiskCalculatorPage.xaml" />
+    <None Remove="Views\AccountsPage.xaml" />
     <None Remove="Views\ChartsPage.xaml" />
     <None Remove="Views\ClientsPage.xaml" />
     <None Remove="Views\CounterpartiesPage.xaml" />
     <None Remove="Views\DashboardPage.xaml" />
     <None Remove="Views\LoginPage.xaml" />
     <None Remove="Views\MainShellPage.xaml" />
+    <None Remove="Views\ReportsPage.xaml" />
+    <None Remove="Views\RiskLabelsPage.xaml" />
     <None Remove="Views\RiskScoresPage.xaml" />
     <None Remove="Views\TransactionsPage.xaml" />
   </ItemGroup>
@@ -55,6 +58,21 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ReportsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\RiskLabelsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AccountsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ChartsPage.xaml">

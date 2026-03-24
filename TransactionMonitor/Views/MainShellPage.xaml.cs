@@ -57,6 +57,10 @@ namespace TransactionMonitor.Views
                     ContentFrame.Navigate(typeof(ClientsPage));
                     PageTitle.Text = "Клиенты";
                     break;
+                case "accounts":
+                    ContentFrame.Navigate(typeof(AccountsPage));
+                    PageTitle.Text = "Счета";
+                    break;
                 case "transactions":
                     ContentFrame.Navigate(typeof(TransactionsPage));
                     PageTitle.Text = "Транзакции";
@@ -68,6 +72,14 @@ namespace TransactionMonitor.Views
                 case "risks":
                     ContentFrame.Navigate(typeof(RiskScoresPage));
                     PageTitle.Text = "Оценки риска";
+                    break;
+                case "labels":
+                    ContentFrame.Navigate(typeof(RiskLabelsPage));
+                    PageTitle.Text = "Метки риска";
+                    break;
+                case "reports":
+                    ContentFrame.Navigate(typeof(ReportsPage));
+                    PageTitle.Text = "Отчёты";
                     break;
                 case "calculator":
                     ContentFrame.Navigate(typeof(RiskCalculatorPage));

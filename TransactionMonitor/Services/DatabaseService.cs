@@ -87,26 +87,33 @@ namespace TransactionMonitor.Services
             return transactions;
         }
 
-        public (int totalClients, int blockedClients, int totalTransactions, int fraudCount) GetDashboardStats()
+        public DashboardStats GetDashboardStats()
         {
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
 
-            int totalClients = 0, blockedClients = 0, totalTransactions = 0, fraudCount = 0;
+            var stats = new DashboardStats();
 
-            var cmd1 = new SqlCommand("SELECT COUNT(*) FROM Clients", connection);
-            totalClients = (int)cmd1.ExecuteScalar();
+            stats.TotalClients = (int)new SqlCommand("SELECT COUNT(*) FROM Clients", connection).ExecuteScalar();
+            stats.BlockedClients = (int)new SqlCommand("SELECT COUNT(*) FROM Clients WHERE IsBlocked = 1", connection).ExecuteScalar();
+            stats.TotalTransactions = (int)new SqlCommand("SELECT COUNT(*) FROM Transactions", connection).ExecuteScalar();
+            stats.FraudCount = (int)new SqlCommand("SELECT COUNT(*) FROM RiskScores WHERE IsFraud = 1", connection).ExecuteScalar();
+            stats.TotalAccounts = (int)new SqlCommand("SELECT COUNT(*) FROM Accounts", connection).ExecuteScalar();
+            stats.ActiveAccounts = (int)new SqlCommand("SELECT COUNT(*) FROM Accounts WHERE Status = 'Active'", connection).ExecuteScalar();
+            stats.FrozenAccounts = (int)new SqlCommand("SELECT COUNT(*) FROM Accounts WHERE Status = 'Frozen'", connection).ExecuteScalar();
+            stats.TotalCounterparties = (int)new SqlCommand("SELECT COUNT(*) FROM Counterparties", connection).ExecuteScalar();
+            stats.BlacklistedCounterparties = (int)new SqlCommand("SELECT COUNT(*) FROM Counterparties WHERE IsBlacklisted = 1", connection).ExecuteScalar();
 
-            var cmd2 = new SqlCommand("SELECT COUNT(*) FROM Clients WHERE IsBlocked = 1", connection);
-            blockedClients = (int)cmd2.ExecuteScalar();
+            var sumCmd = new SqlCommand("SELECT ISNULL(SUM(Amount), 0) FROM Transactions", connection);
+            stats.TotalAmount = Convert.ToDecimal(sumCmd.ExecuteScalar());
 
-            var cmd3 = new SqlCommand("SELECT COUNT(*) FROM Transactions", connection);
-            totalTransactions = (int)cmd3.ExecuteScalar();
+            var avgCmd = new SqlCommand("SELECT ISNULL(AVG(RiskScore), 0) FROM RiskScores", connection);
+            stats.AvgRiskScore = Convert.ToDouble(avgCmd.ExecuteScalar());
 
-            var cmd4 = new SqlCommand("SELECT COUNT(*) FROM RiskScores WHERE IsFraud = 1", connection);
-            fraudCount = (int)cmd4.ExecuteScalar();
+            var highRiskCmd = new SqlCommand("SELECT COUNT(*) FROM RiskScores WHERE RiskLevel IN ('High','Critical') AND ReviewedByAnalyst = 0", connection);
+            stats.UnreviewedHighRisk = (int)highRiskCmd.ExecuteScalar();
 
-            return (totalClients, blockedClients, totalTransactions, fraudCount);
+            return stats;
         }
 
         public List<Counterparty> GetCounterparties()
@@ -309,6 +316,160 @@ namespace TransactionMonitor.Services
                     AccountType = reader.GetString(5),
                     OwnerName = reader.GetString(6)
                 });
+            }
+            return list;
+        }
+        public List<Account> GetAccountsFull()
+        {
+            var list = new List<Account>();
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                SELECT a.AccountID, a.ClientID, a.AccountNumber, a.Balance, 
+                       a.Currency, a.Status, a.AccountType, a.OpenDate,
+                       c.FullName
+                FROM Accounts a
+                JOIN Clients c ON c.ClientID = a.ClientID
+                ORDER BY a.OpenDate DESC", connection);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Account
+                {
+                    AccountID = reader.GetInt32(0),
+                    ClientID = reader.GetInt32(1),
+                    AccountNumber = reader.GetString(2),
+                    Balance = reader.GetDecimal(3),
+                    Currency = reader.GetString(4).Trim(),
+                    Status = reader.GetString(5),
+                    AccountType = reader.GetString(6),
+                    OpenDate = reader.GetDateTime(7),
+                    OwnerName = reader.GetString(8)
+                });
+            }
+            return list;
+        }
+        public List<RiskLabel> GetRiskLabels()
+        {
+            var list = new List<RiskLabel>();
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(
+                "SELECT LabelID, LabelName, Description, Severity FROM RiskLabels ORDER BY LabelID", connection);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new RiskLabel
+                {
+                    LabelID = reader.GetInt32(0),
+                    LabelName = reader.GetString(1),
+                    Description = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    Severity = reader.GetString(3)
+                });
+            }
+            return list;
+        }
+
+        public int CreateRiskLabel(string name, string description, string severity)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(
+                @"INSERT INTO RiskLabels (LabelName, Description, Severity)
+                  VALUES (@name, @desc, @sev);
+                  SELECT SCOPE_IDENTITY();", connection);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@desc", description);
+            cmd.Parameters.AddWithValue("@sev", severity);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        public void UpdateRiskLabel(int id, string name, string description, string severity)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(
+                @"UPDATE RiskLabels SET LabelName=@name, Description=@desc, Severity=@sev
+                  WHERE LabelID=@id", connection);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@desc", description);
+            cmd.Parameters.AddWithValue("@sev", severity);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void DeleteRiskLabel(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand("DELETE FROM RiskLabels WHERE LabelID=@id", connection);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+        }
+        public Dictionary<string, int> GetRiskDistribution()
+        {
+            var dict = new Dictionary<string, int>
+            {
+                { "Low", 0 }, { "Medium", 0 }, { "High", 0 }, { "Critical", 0 }
+            };
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(
+                "SELECT RiskLevel, COUNT(*) FROM RiskScores GROUP BY RiskLevel", connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var level = reader.GetString(0);
+                if (dict.ContainsKey(level))
+                    dict[level] = reader.GetInt32(1);
+            }
+            return dict;
+        }
+
+        public List<(string Type, int Count, decimal Sum)> GetTransactionsByType()
+        {
+            var list = new List<(string, int, decimal)>();
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(
+                @"SELECT TransactionType, COUNT(*), SUM(Amount)
+                  FROM Transactions GROUP BY TransactionType
+                  ORDER BY COUNT(*) DESC", connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add((reader.GetString(0), reader.GetInt32(1), reader.GetDecimal(2)));
+            }
+            return list;
+        }
+
+        public List<(string Name, int TxCount, double Score)> GetTopClients(int top = 5)
+        {
+            var list = new List<(string, int, double)>();
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand($@"
+                SELECT TOP {top} c.FullName, COUNT(t.TransactionID), c.ScoringScore
+                FROM Clients c
+                JOIN Accounts a ON a.ClientID = c.ClientID
+                JOIN Transactions t ON t.SenderAccountID = a.AccountID
+                GROUP BY c.FullName, c.ScoringScore
+                ORDER BY COUNT(t.TransactionID) DESC", connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add((reader.GetString(0), reader.GetInt32(1), reader.GetDouble(2)));
             }
             return list;
         }

@@ -2,8 +2,7 @@
     x:Class="TransactionMonitor.Views.MainShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    Background="Transparent">
     <NavigationView
         x:Name="NavView"
         PaneDisplayMode="Left"
@@ -21,6 +20,11 @@
                     <SymbolIcon Symbol="People"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
+            <NavigationViewItem Tag="accounts" Content="Счета">
+                <NavigationViewItem.Icon>
+                    <SymbolIcon Symbol="Library"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
             <NavigationViewItem Tag="transactions" Content="Транзакции">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Switch"/>
@@ -34,6 +38,16 @@
             <NavigationViewItem Tag="risks" Content="Оценки риска">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Flag"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem Tag="labels" Content="Метки риска">
+                <NavigationViewItem.Icon>
+                    <SymbolIcon Symbol="Tag"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem Tag="reports" Content="Отчёты">
+                <NavigationViewItem.Icon>
+                    <SymbolIcon Symbol="Document"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
             <NavigationViewItem Tag="calculator" Content="ML-калькулятор">

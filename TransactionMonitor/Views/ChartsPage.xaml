@@ -1,14 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="TransactionMonitor.Views.ChartsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TransactionMonitor.Views"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <ScrollViewer>
+        <Grid Padding="32" RowSpacing="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-    </Grid>
+            <StackPanel Grid.Row="0" Spacing="4">
+                <TextBlock Text="Графики и аналитика" FontSize="32" FontWeight="Bold"/>
+                <TextBlock Text="Визуализация данных по транзакциям и рискам"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- Распределение рисков: сегментная полоса + карточки -->
+            <Border Grid.Row="1"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="20">
+                    <TextBlock Text="Распределение уровней риска" FontSize="20" FontWeight="SemiBold"/>
+                    <Border CornerRadius="6" Height="40" x:Name="SegmentBarContainer">
+                        <StackPanel x:Name="SegmentBar" Orientation="Horizontal"/>
+                    </Border>
+                    <Grid x:Name="RiskCardsGrid" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Вертикальные столбцы -->
+            <Border Grid.Row="2"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Транзакции по типам" FontSize="20" FontWeight="SemiBold"/>
+                    <Grid Height="260">
+                        <StackPanel x:Name="VerticalBarsPanel" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" Spacing="24"
+                                    VerticalAlignment="Bottom"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Топ клиентов -->
+            <Border Grid.Row="3"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Топ-5 клиентов по транзакциям" FontSize="20" FontWeight="SemiBold"/>
+                    <StackPanel x:Name="ClientsPanel" Spacing="10"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </Page>

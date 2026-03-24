@@ -1,0 +1,128 @@
+<Page
+    x:Class="TransactionMonitor.Views.ReportsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer>
+        <Grid Padding="32" RowSpacing="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <StackPanel Grid.Row="0" Spacing="4">
+                <TextBlock Text="Отчёты" FontSize="32" FontWeight="Bold"/>
+                <TextBlock Text="Сводные отчёты и экспорт данных"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- Карточки быстрого экспорта -->
+            <Grid Grid.Row="1" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="🛡️ Отчёт по рискам" FontWeight="SemiBold"/>
+                        <TextBlock Text="Распределение уровней риска по всем оценённым транзакциям"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="📥 Экспорт CSV" Click="ExportRisk_Click"
+                                HorizontalAlignment="Stretch"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="💳 Отчёт по транзакциям" FontWeight="SemiBold"/>
+                        <TextBlock Text="Группировка транзакций по типам с суммами"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="📥 Экспорт CSV" Click="ExportTypes_Click"
+                                HorizontalAlignment="Stretch"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="👥 Отчёт по клиентам" FontWeight="SemiBold"/>
+                        <TextBlock Text="Топ клиентов по количеству транзакций и скорингу"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="📥 Экспорт CSV" Click="ExportClients_Click"
+                                HorizontalAlignment="Stretch"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="3"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="🏦 Отчёт по счетам" FontWeight="SemiBold"/>
+                        <TextBlock Text="Все счета с балансами, статусами и владельцами"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="📥 Экспорт CSV" Click="ExportAccounts_Click"
+                                HorizontalAlignment="Stretch"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Сводка: риски -->
+            <Border Grid.Row="2"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Сводка по рискам" FontSize="20" FontWeight="SemiBold"/>
+                    <StackPanel x:Name="RiskSummaryPanel" Spacing="10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Сводка: типы транзакций -->
+            <Border Grid.Row="3"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Сводка по типам транзакций" FontSize="20" FontWeight="SemiBold"/>
+                    <StackPanel x:Name="TypeSummaryPanel" Spacing="10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Сводка: топ клиенты -->
+            <Border Grid.Row="4"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Топ-5 клиентов" FontSize="20" FontWeight="SemiBold"/>
+                    <StackPanel x:Name="ClientsSummaryPanel" Spacing="10"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Page>

@@ -1,4 +1,6 @@
-﻿namespace TransactionMonitor.Models
+﻿using System;
+
+namespace TransactionMonitor.Models
 {
     public class Account
     {
@@ -10,7 +12,7 @@
         public string? Status { get; set; }
         public string? AccountType { get; set; }
         public string? OwnerName { get; set; }
-
+        public DateTime OpenDate { get; set; }
         public string BalanceFormatted => Balance.ToString("N2") + " " + Currency;
         public string DisplayName => $"{OwnerName} | {AccountNumber}";
     }
