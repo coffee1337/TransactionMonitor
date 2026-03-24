@@ -65,12 +65,12 @@
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="1.2*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="1" Text="Название" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="2" Text="ИНН" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="0" Padding="17,0,0,0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Padding="23,0,0,0" Text="Название" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Padding="6,0,0,0" Text="ИНН" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                 <TextBlock Grid.Column="3" Text="Категория" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="4" Text="Риск" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="5" Text="ЧС" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Padding="0,0,25,0" Text="Риск" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Padding="0,0,15,0" Text="ЧС" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                 <TextBlock Grid.Column="6" Text="Страна" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </Grid>
 
@@ -99,7 +99,7 @@
                                        TextTrimming="CharacterEllipsis"/>
                             <TextBlock Grid.Column="2" Text="{Binding TaxID}"
                                        VerticalAlignment="Center" FontFamily="Consolas"/>
-                            <TextBlock Grid.Column="3" Text="{Binding ActivityCategory}"
+                            <TextBlock Grid.Column="3" Padding="1,0,0,0" Text="{Binding ActivityCategory}"
                                        VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                        TextTrimming="CharacterEllipsis"/>

@@ -76,13 +76,13 @@
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="1" Text="Отправитель" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="2" Text="Контрагент" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="0" Padding="20,0,0,0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Padding="25,0,0,0" Text="Отправитель" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Padding="0,0,0,0" Text="Контрагент" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                 <TextBlock Grid.Column="3" Text="Сумма" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="4" Text="Тип" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="5" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="6" Text="Риск" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Padding="0,0,65,0" Text="Тип" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Padding="0,0,45,0" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="6" Padding="0,0,27,0" Text="Риск" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
             </Grid>
 
             <ListView x:Name="TransactionsList" Grid.Row="1"
@@ -108,7 +108,7 @@
                             <TextBlock Grid.Column="1" Text="{Binding SenderName}"
                                        VerticalAlignment="Center" FontWeight="SemiBold"
                                        TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Grid.Column="2" Text="{Binding CounterpartyName}"
+                            <TextBlock Grid.Column="2" Padding="2,0,0,0" Text="{Binding CounterpartyName}"
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>

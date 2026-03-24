@@ -116,14 +116,14 @@
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="ID" Style="{StaticResource TableHeaderTextStyle}"/>
-                <TextBlock Grid.Column="1" Text="Тр. ID" Style="{StaticResource TableHeaderTextStyle}"/>
-                <TextBlock Grid.Column="2" Text="Клиент" Style="{StaticResource TableHeaderTextStyle}"/>
-                <TextBlock Grid.Column="3" Text="Скор" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="4" Text="Уровень" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="5" Text="Фрод" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="6" Text="Проверен" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="7" Text="Дата" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Padding="20,0,0,0" Text="ID" Style="{StaticResource TableHeaderTextStyle}"/>
+                <TextBlock Grid.Column="1" Padding="17,0,0,0" Text="Тр. ID" Style="{StaticResource TableHeaderTextStyle}"/>
+                <TextBlock Grid.Column="2" Margin="32,0,200,0" Text="Клиент" Style="{StaticResource TableHeaderTextStyle}"/>
+                <TextBlock Grid.Column="3" Margin="-20,0,75,0" Text="Скор" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Margin="-30,0,40,0" Text="Уровень" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Margin="0,0,57,0" Text="Фрод" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="6" Margin="-10,0,30,0" Text="Проверен" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="7" Margin="0,0,30,0" Text="Дата" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center"/>
             </Grid>
 
             <ListView x:Name="RiskScoresList" Grid.Row="1"

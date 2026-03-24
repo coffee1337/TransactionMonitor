@@ -180,7 +180,7 @@
 
                             <Border Grid.Row="0" Grid.Column="0"
                                     Background="#3D1A1A" CornerRadius="4" Padding="8,3">
-                                <TextBlock Text="Админ" FontSize="11" Foreground="#FF6B6B"/>
+                                <TextBlock Padding="9,0,0,1" Text="Админ" FontSize="11" Foreground="#FF6B6B"/>
                             </Border>
                             <TextBlock Grid.Row="0" Grid.Column="1"
                                        Text="admin / admin123" FontSize="12"
@@ -189,7 +189,7 @@
 
                             <Border Grid.Row="1" Grid.Column="0"
                                     Background="#3D3200" CornerRadius="4" Padding="8,3">
-                                <TextBlock Text="Аналитик" FontSize="11" Foreground="#FFD700"/>
+                                <TextBlock Padding="1,0,0,1" Text="Аналитик" FontSize="11" Foreground="#FFD700"/>
                             </Border>
                             <TextBlock Grid.Row="1" Grid.Column="1"
                                        Text="analyst / analyst123" FontSize="12"
@@ -198,7 +198,7 @@
 
                             <Border Grid.Row="2" Grid.Column="0"
                                     Background="#1A3D1A" CornerRadius="4" Padding="8,3">
-                                <TextBlock Text="Оператор" FontSize="11" Foreground="#6BFF6B"/>
+                                <TextBlock Padding="1,0,0,1" Text="Оператор" FontSize="11" Foreground="#6BFF6B"/>
                             </Border>
                             <TextBlock Grid.Row="2" Grid.Column="1"
                                        Text="operator / operator123" FontSize="12"

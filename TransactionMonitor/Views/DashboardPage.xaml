@@ -230,11 +230,11 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="ID" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <TextBlock Grid.Column="1" Text="Отправитель" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <TextBlock Grid.Column="2" Text="Сумма" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <TextBlock Grid.Column="3" Text="Тип" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <TextBlock Grid.Column="4" Text="Риск" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Padding="16,0,0,0" Text="ID" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Padding="25,0,0,0" Text="Отправитель" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="2" Padding="0,0,0,0" Text="Сумма" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="3" Padding="15,0,0,0" Text="Тип" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="4" Padding="0,0,25,0" Text="Риск" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                     </Grid>
 
                     <ListView x:Name="RecentTransactionsList"
@@ -257,7 +257,7 @@
                                                VerticalAlignment="Center" FontSize="13"/>
                                     <TextBlock Grid.Column="2" Text="{Binding AmountFormatted}"
                                                VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding TransactionType}"
+                                    <TextBlock TextAlignment="Center" Grid.Column="3" Text="{Binding TransactionType}"
                                                VerticalAlignment="Center" FontSize="13"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     <Border Grid.Column="4"

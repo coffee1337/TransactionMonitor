@@ -134,13 +134,13 @@
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="110"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="1" Text="Номер счёта" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="2" Text="Владелец" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="0" Padding="20,0,0,0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Padding="23,0,0,0" Text="Номер счёта" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Padding="8,0,0,0" Text="Владелец" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                 <TextBlock Grid.Column="3" Text="Баланс" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="4" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="5" Text="Тип" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="6" Text="Дата" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Padding="0,0,58,0" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Padding="0,0,45,0" Text="Тип" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="6" Padding="0,0,38,0" Text="Дата" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
             </Grid>
 
             <ListView x:Name="AccountsList" Grid.Row="1"
@@ -167,7 +167,7 @@
                                        VerticalAlignment="Center" FontFamily="Consolas" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="2" Text="{Binding OwnerName}"
                                        VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Grid.Column="3" Text="{Binding BalanceFormatted}"
+                            <TextBlock Grid.Column="3" Padding="15,0,0,0" Text="{Binding BalanceFormatted}"
                                        VerticalAlignment="Center" FontWeight="SemiBold"
                                        Foreground="{Binding BalanceForeground}"/>
                             <Border Grid.Column="4" Background="{Binding StatusBackground}"

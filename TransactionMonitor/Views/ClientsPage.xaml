@@ -61,12 +61,12 @@
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="1" Text="ФИО" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="2" Text="Телефон" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="3" Text="Email" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Grid.Column="4" Text="Скоринг" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="5" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Padding="15,0,0,0" Text="ID" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Padding="25,0,0,0" Text="ФИО" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Padding="7,0,0,0" Text="Телефон" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="3" Padding="0,0,0,0" Text="Email" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Grid.Column="4" Padding="0,0,40,0" Text="Скоринг" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Padding="0,0,40,0" Text="Статус" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
             </Grid>
 
             <ListView x:Name="ClientsList" Grid.Row="1"
@@ -92,7 +92,7 @@
                                        VerticalAlignment="Center" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="2" Text="{Binding Phone}"
                                        VerticalAlignment="Center" FontFamily="Consolas"/>
-                            <TextBlock Grid.Column="3" Text="{Binding Email}"
+                            <TextBlock Grid.Column="3" Padding="5,0,0,0" Text="{Binding Email}"
                                        VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                        TextTrimming="CharacterEllipsis"/>
