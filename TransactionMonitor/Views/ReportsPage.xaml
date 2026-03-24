@@ -35,11 +35,14 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="🛡️ Отчёт по рискам" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE9D9;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock Text="Отчёт по рискам" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBlock Text="Распределение уровней риска по всем оценённым транзакциям"
                                    FontSize="12" TextWrapping="Wrap"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <Button Content="📥 Экспорт CSV" Click="ExportRisk_Click"
+                        <Button Content="Экспорт CSV" Click="ExportRisk_Click"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource AccentButtonStyle}"/>
                     </StackPanel>
@@ -50,11 +53,14 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="💳 Отчёт по транзакциям" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE8AB;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock Text="Отчёт по транзакциям" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBlock Text="Группировка транзакций по типам с суммами"
                                    FontSize="12" TextWrapping="Wrap"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <Button Content="📥 Экспорт CSV" Click="ExportTypes_Click"
+                        <Button Content="Экспорт CSV" Click="ExportTypes_Click"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource AccentButtonStyle}"/>
                     </StackPanel>
@@ -65,11 +71,14 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="👥 Отчёт по клиентам" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE77B;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock Text="Отчёт по клиентам" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBlock Text="Топ клиентов по количеству транзакций и скорингу"
                                    FontSize="12" TextWrapping="Wrap"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <Button Content="📥 Экспорт CSV" Click="ExportClients_Click"
+                        <Button Content="Экспорт CSV" Click="ExportClients_Click"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource AccentButtonStyle}"/>
                     </StackPanel>
@@ -80,11 +89,14 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="🏦 Отчёт по счетам" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE8C7;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock Text="Отчёт по счетам" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBlock Text="Все счета с балансами, статусами и владельцами"
                                    FontSize="12" TextWrapping="Wrap"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <Button Content="📥 Экспорт CSV" Click="ExportAccounts_Click"
+                        <Button Content="Экспорт CSV" Click="ExportAccounts_Click"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource AccentButtonStyle}"/>
                     </StackPanel>

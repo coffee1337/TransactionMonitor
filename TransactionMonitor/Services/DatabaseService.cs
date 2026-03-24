@@ -473,5 +473,57 @@ namespace TransactionMonitor.Services
             }
             return list;
         }
+        public int CreateClient(string fullName, string phone, string email, string passportSeries, string passportNumber, DateTime dateOfBirth)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                INSERT INTO Clients (FullName, Phone, Email, PassportSeries, PassportNumber, DateOfBirth)
+                VALUES (@name, @phone, @email, @series, @number, @dob);
+                SELECT SCOPE_IDENTITY();", connection);
+            cmd.Parameters.AddWithValue("@name", fullName);
+            cmd.Parameters.AddWithValue("@phone", phone);
+            cmd.Parameters.AddWithValue("@email", string.IsNullOrEmpty(email) ? DBNull.Value : email);
+            cmd.Parameters.AddWithValue("@series", passportSeries);
+            cmd.Parameters.AddWithValue("@number", passportNumber);
+            cmd.Parameters.AddWithValue("@dob", dateOfBirth);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+        public int CreateAccount(int clientId, string accountNumber, decimal balance, string accountType)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                INSERT INTO Accounts (ClientID, AccountNumber, Balance, Currency, OpenDate, Status, AccountType)
+                VALUES (@clientId, @number, @balance, N'RUB', GETDATE(), N'Active', @type);
+                SELECT SCOPE_IDENTITY();", connection);
+            cmd.Parameters.AddWithValue("@clientId", clientId);
+            cmd.Parameters.AddWithValue("@number", accountNumber);
+            cmd.Parameters.AddWithValue("@balance", balance);
+            cmd.Parameters.AddWithValue("@type", accountType);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+        public int CreateCounterparty(string name, string taxId, string category, string riskLevel, bool isBlacklisted, string country)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                INSERT INTO Counterparties (Name, TaxID, ActivityCategory, RiskLevel, IsBlacklisted, CountryOfRegistry)
+                VALUES (@name, @tax, @cat, @risk, @bl, @country);
+                SELECT SCOPE_IDENTITY();", connection);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@tax", taxId);
+            cmd.Parameters.AddWithValue("@cat", string.IsNullOrEmpty(category) ? DBNull.Value : category);
+            cmd.Parameters.AddWithValue("@risk", riskLevel);
+            cmd.Parameters.AddWithValue("@bl", isBlacklisted);
+            cmd.Parameters.AddWithValue("@country", country);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
     }
 }

@@ -17,7 +17,11 @@ namespace TransactionMonitor.Views
         public DashboardPage()
         {
             this.InitializeComponent();
-            this.Loaded += (s, e) => LoadData();
+            this.Loaded += (s, e) =>
+            {
+                LoadData();
+                FadeInStoryboard.Begin();
+            };
         }
 
         private void LoadData()
@@ -28,7 +32,7 @@ namespace TransactionMonitor.Views
             BlockedClientsText.Text = $"заблокировано: {stats.BlockedClients}";
 
             TotalTransactionsText.Text = stats.TotalTransactions.ToString();
-            TotalAmountText.Text = $"сумма: {stats.TotalAmount:N0} ₽";
+            TotalAmountText.Text = $"сумма: {stats.TotalAmount:N0} RUB";
 
             FraudCountText.Text = stats.FraudCount.ToString();
             UnreviewedText.Text = $"непроверенных: {stats.UnreviewedHighRisk}";
@@ -43,11 +47,11 @@ namespace TransactionMonitor.Views
                 ColorHelper.FromArgb(255, 244, 67, 54));
 
             TotalAccountsText.Text = stats.TotalAccounts.ToString();
-            ActiveAccountsText.Text = $"● активных: {stats.ActiveAccounts}";
-            FrozenAccountsText.Text = $"● замороженных: {stats.FrozenAccounts}";
+            ActiveAccountsText.Text = $"активных: {stats.ActiveAccounts}";
+            FrozenAccountsText.Text = $"замороженных: {stats.FrozenAccounts}";
 
             TotalCounterpartiesText.Text = stats.TotalCounterparties.ToString();
-            BlacklistedText.Text = $"● в чёрном списке: {stats.BlacklistedCounterparties}";
+            BlacklistedText.Text = $"в чёрном списке: {stats.BlacklistedCounterparties}";
 
             BuildRiskBars();
             LoadRecentTransactions();
@@ -87,7 +91,8 @@ namespace TransactionMonitor.Views
                 {
                     Text = labels.ContainsKey(kv.Key) ? labels[kv.Key] : kv.Key,
                     VerticalAlignment = VerticalAlignment.Center,
-                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    FontSize = 13
                 };
                 Grid.SetColumn(label, 0);
 
@@ -154,7 +159,7 @@ namespace TransactionMonitor.Views
         public string? RiskLevel { get; set; }
 
         public string IdText => $"#{TransactionID}";
-        public string AmountFormatted => Amount.ToString("N2") + " ₽";
+        public string AmountFormatted => Amount.ToString("N2") + " RUB";
 
         public SolidColorBrush RiskBackground => RiskLevel switch
         {

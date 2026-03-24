@@ -22,10 +22,10 @@ namespace TransactionMonitor.Services
 
         public string LevelEmoji => Level switch
         {
-            "Low" => "🟢 Low",
-            "Medium" => "🟡 Medium",
-            "High" => "🟠 High",
-            "Critical" => "🔴 Critical",
+            "Low" => "Low",
+            "Medium" => "Medium",
+            "High" => "High",
+            "Critical" => "Critical",
             _ => Level
         };
     }
@@ -41,69 +41,69 @@ namespace TransactionMonitor.Services
             if (input.Amount > 500000)
             {
                 score += 0.35;
-                factors.Add("💰 Очень крупная сумма (>500к руб.)");
+                factors.Add("Очень крупная сумма (>500 000 руб.)");
             }
             else if (input.Amount > 100000)
             {
                 score += 0.20;
-                factors.Add("💰 Крупная сумма (>100к руб.)");
+                factors.Add("Крупная сумма (>100 000 руб.)");
             }
             else if (input.Amount > 50000)
             {
                 score += 0.10;
-                factors.Add("💰 Средняя сумма (>50к руб.)");
+                factors.Add("Средняя сумма (>50 000 руб.)");
             }
 
             // Фактор 2: Ночное время (00:00 - 05:00)
             if (input.TransactionHour >= 0 && input.TransactionHour < 5)
             {
                 score += 0.20;
-                factors.Add("🌙 Ночная транзакция (00:00-05:00)");
+                factors.Add("Ночная транзакция (00:00 — 05:00)");
             }
 
             // Фактор 3: Контрагент в чёрном списке
             if (input.IsCounterpartyBlacklisted)
             {
                 score += 0.40;
-                factors.Add("🚫 Контрагент в чёрном списке");
+                factors.Add("Контрагент в чёрном списке");
             }
 
             // Фактор 4: Уровень риска контрагента
             if (input.CounterpartyRiskLevel == "High")
             {
                 score += 0.20;
-                factors.Add("⚠️ Контрагент высокого риска");
+                factors.Add("Контрагент высокого риска");
             }
             else if (input.CounterpartyRiskLevel == "Medium")
             {
                 score += 0.10;
-                factors.Add("⚠️ Контрагент среднего риска");
+                factors.Add("Контрагент среднего риска");
             }
 
             // Фактор 5: Клиент заблокирован
             if (input.IsClientBlocked)
             {
                 score += 0.50;
-                factors.Add("🔒 Клиент заблокирован");
+                factors.Add("Клиент заблокирован");
             }
 
             // Фактор 6: Риск-скор клиента
             if (input.ClientScoringScore > 0.7)
             {
                 score += 0.20;
-                factors.Add("📊 Высокий скоринг клиента");
+                factors.Add("Высокий скоринг клиента");
             }
             else if (input.ClientScoringScore > 0.4)
             {
                 score += 0.10;
-                factors.Add("📊 Средний скоринг клиента");
+                factors.Add("Средний скоринг клиента");
             }
 
             // Фактор 7: Много транзакций за 24 часа
             if (input.TransactionsLast24h > 10)
             {
                 score += 0.15;
-                factors.Add("⚡ Высокая частота (>10 тр. за 24ч)");
+                factors.Add("Высокая частота (>10 тр. за 24ч)");
             }
 
             // Ограничиваем максимум
@@ -111,7 +111,7 @@ namespace TransactionMonitor.Services
 
             // Если нет факторов риска
             if (factors.Count == 0)
-                factors.Add("✅ Факторов риска не обнаружено");
+                factors.Add("Факторов риска не обнаружено");
 
             return new RiskResult
             {

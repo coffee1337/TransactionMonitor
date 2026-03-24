@@ -30,17 +30,13 @@ namespace TransactionMonitor.Views
             TotalText.Text = _all.Count.ToString();
             ActiveText.Text = _all.Count(a => a.Status == "Active").ToString();
             FrozenText.Text = _all.Count(a => a.Status == "Frozen").ToString();
-
-            var totalBalance = accounts.Sum(a => a.Balance);
-            TotalBalanceText.Text = totalBalance.ToString("N2") + " ₽";
-
+            TotalBalanceText.Text = accounts.Sum(a => a.Balance).ToString("N2") + " RUB";
             CountText.Text = $"Всего: {_all.Count}";
         }
 
         private void ApplyFilters()
         {
             if (_all == null || _all.Count == 0) return;
-
             var query = SearchBox.Text?.ToLower() ?? "";
             var status = (StatusFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Все статусы";
             var type = (TypeFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Все типы";
@@ -62,29 +58,66 @@ namespace TransactionMonitor.Views
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
         private void Filter_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilters();
 
-        private async void Export_Click(object sender, RoutedEventArgs e)
+        private bool _dialogOpen = false;
+
+        private async void AddAccount_Click(object sender, RoutedEventArgs e)
         {
-            var export = new CsvExportService();
-            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(
-                (Application.Current as App)?.MainWindow);
+            if (_dialogOpen) return;
+            _dialogOpen = true;
 
-            var headers = new List<string> { "ID", "Номер счёта", "Клиент", "Баланс", "Валюта", "Тип", "Статус", "Дата открытия" };
-            var rows = _all.Select(a => new List<string>
+            var clients = _db.GetClients();
+            var clientCombo = new ComboBox
             {
-                a.AccountID.ToString(),
-                a.AccountNumber ?? "",
-                a.OwnerName ?? "",
-                a.Balance.ToString("N2"),
-                a.Currency ?? "",
-                a.AccountType ?? "",
-                a.Status ?? "",
-                a.OpenDateFormatted
-            }).ToList();
+                PlaceholderText = "Выберите клиента",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ItemsSource = clients.Select(c => new { c.ClientID, Display = $"{c.FullName} (#{c.ClientID})" }).ToList(),
+                DisplayMemberPath = "Display"
+            };
 
-            await export.ExportAsync(headers, rows, "accounts", windowHandle);
+            var numberBox = new TextBox { PlaceholderText = "40817810000000000001", HorizontalAlignment = HorizontalAlignment.Stretch };
+            var balanceBox = new NumberBox { PlaceholderText = "0.00", Minimum = 0, Value = 0, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, HorizontalAlignment = HorizontalAlignment.Stretch };
+
+            var typeCombo = new ComboBox { HorizontalAlignment = HorizontalAlignment.Stretch, SelectedIndex = 0 };
+            typeCombo.Items.Add("Debit");
+            typeCombo.Items.Add("Credit");
+            typeCombo.Items.Add("Savings");
+            typeCombo.Items.Add("Corporate");
+
+            var form = new StackPanel { Spacing = 10, MinWidth = 380 };
+            form.Children.Add(new TextBlock { Text = "Клиент", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            form.Children.Add(clientCombo);
+            form.Children.Add(new TextBlock { Text = "Номер счёта", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            form.Children.Add(numberBox);
+            form.Children.Add(new TextBlock { Text = "Начальный баланс (RUB)", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            form.Children.Add(balanceBox);
+            form.Children.Add(new TextBlock { Text = "Тип счёта", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            form.Children.Add(typeCombo);
+
+            var dialog = new ContentDialog
+            {
+                Title = "Новый счёт",
+                Content = form,
+                PrimaryButtonText = "Создать",
+                CloseButtonText = "Отмена",
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                dynamic selected = clientCombo.SelectedItem;
+                if (selected == null || string.IsNullOrEmpty(numberBox.Text.Trim()))
+                {
+                    _dialogOpen = false;
+                    return;
+                }
+                int clientId = selected.ClientID;
+                _db.CreateAccount(clientId, numberBox.Text.Trim(), (decimal)balanceBox.Value, typeCombo.SelectedItem?.ToString() ?? "Debit");
+                LoadData();
+            }
+            _dialogOpen = false;
         }
 
-        private bool _dialogOpen = false;
         private async void AccountsList_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_dialogOpen) return;
@@ -92,12 +125,12 @@ namespace TransactionMonitor.Views
             _dialogOpen = true;
 
             var content = new StackPanel { Spacing = 12, MinWidth = 360 };
-            content.Children.Add(MakeRow("Номер счёта:", acc.AccountNumber ?? ""));
-            content.Children.Add(MakeRow("Владелец:", acc.OwnerName ?? ""));
-            content.Children.Add(MakeRow("Баланс:", acc.BalanceFormatted));
-            content.Children.Add(MakeRow("Тип:", acc.AccountType ?? ""));
-            content.Children.Add(MakeRow("Статус:", acc.StatusText));
-            content.Children.Add(MakeRow("Дата открытия:", acc.OpenDateFormatted));
+            content.Children.Add(MakeRow("Номер счёта", acc.AccountNumber ?? ""));
+            content.Children.Add(MakeRow("Владелец", acc.OwnerName ?? ""));
+            content.Children.Add(MakeRow("Баланс", acc.BalanceFormatted));
+            content.Children.Add(MakeRow("Тип", acc.AccountType ?? ""));
+            content.Children.Add(MakeRow("Статус", acc.StatusText));
+            content.Children.Add(MakeRow("Дата открытия", acc.OpenDateFormatted));
 
             var dialog = new ContentDialog
             {
@@ -106,22 +139,16 @@ namespace TransactionMonitor.Views
                 CloseButtonText = "Закрыть",
                 XamlRoot = this.XamlRoot
             };
-
             await dialog.ShowAsync();
             _dialogOpen = false;
         }
 
         private StackPanel MakeRow(string label, string value)
         {
-            var panel = new StackPanel { Spacing = 4 };
-            panel.Children.Add(new TextBlock
-            {
-                Text = label,
-                FontSize = 12,
-                Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorSecondaryBrush"]
-            });
-            panel.Children.Add(new TextBlock { Text = value, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            return panel;
+            var p = new StackPanel { Spacing = 2 };
+            p.Children.Add(new TextBlock { Text = label, FontSize = 12, Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorSecondaryBrush"] });
+            p.Children.Add(new TextBlock { Text = value, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            return p;
         }
     }
 

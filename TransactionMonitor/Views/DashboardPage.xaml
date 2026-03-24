@@ -5,24 +5,38 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <ScrollViewer>
-        <Grid Padding="32" RowSpacing="24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <StackPanel x:Name="RootPanel" Padding="32" Spacing="24" Opacity="0">
+
+            <StackPanel.Resources>
+                <Storyboard x:Name="FadeInStoryboard">
+                    <DoubleAnimation
+                        Storyboard.TargetName="RootPanel"
+                        Storyboard.TargetProperty="Opacity"
+                        From="0" To="1" Duration="0:0:0.4"/>
+                    <DoubleAnimation
+                        Storyboard.TargetName="RootPanelTranslate"
+                        Storyboard.TargetProperty="Y"
+                        From="20" To="0" Duration="0:0:0.4">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </StackPanel.Resources>
+
+            <StackPanel.RenderTransform>
+                <TranslateTransform x:Name="RootPanelTranslate"/>
+            </StackPanel.RenderTransform>
 
             <!-- Заголовок -->
-            <StackPanel Grid.Row="0" Spacing="4">
+            <StackPanel Spacing="4">
                 <TextBlock Text="Дашборд" FontSize="32" FontWeight="Bold"/>
                 <TextBlock Text="Обзор системы мониторинга транзакций"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="14"/>
             </StackPanel>
 
-            <!-- Строка 1: основные показатели -->
-            <Grid Grid.Row="1" ColumnSpacing="16">
+            <!-- Строка 1 -->
+            <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -30,72 +44,104 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" x:Name="Card1"
+                <!-- Клиенты -->
+                <Border Grid.Column="0"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
-                    <StackPanel Spacing="8">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="👥" FontSize="20"/>
-                            <TextBlock Text="Клиенты" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <TextBlock Text="Клиенты" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock x:Name="TotalClientsText" Text="—" FontSize="32" FontWeight="Bold"
+                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock x:Name="BlockedClientsText" FontSize="12"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
-                        <TextBlock x:Name="TotalClientsText" Text="—" FontSize="32" FontWeight="Bold"
-                                   Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
-                        <TextBlock x:Name="BlockedClientsText" Text=""
-                                   FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                    </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE77B;" FontSize="28"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
+                    </Grid>
                 </Border>
 
+                <!-- Транзакции -->
                 <Border Grid.Column="1"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
-                    <StackPanel Spacing="8">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="💳" FontSize="20"/>
-                            <TextBlock Text="Транзакции" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <TextBlock Text="Транзакции" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock x:Name="TotalTransactionsText" Text="—" FontSize="32" FontWeight="Bold"
+                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock x:Name="TotalAmountText" FontSize="12"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
-                        <TextBlock x:Name="TotalTransactionsText" Text="—" FontSize="32" FontWeight="Bold"
-                                   Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
-                        <TextBlock x:Name="TotalAmountText" Text=""
-                                   FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                    </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE8AB;" FontSize="28"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
+                    </Grid>
                 </Border>
 
+                <!-- Мошенничество -->
                 <Border Grid.Column="2"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
-                    <StackPanel Spacing="8">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="🚨" FontSize="20"/>
-                            <TextBlock Text="Мошенничество" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <TextBlock Text="Мошенничество" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock x:Name="FraudCountText" Text="—" FontSize="32" FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                            <TextBlock x:Name="UnreviewedText" FontSize="12"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
-                        <TextBlock x:Name="FraudCountText" Text="—" FontSize="32" FontWeight="Bold"
-                                   Foreground="#F44336"/>
-                        <TextBlock x:Name="UnreviewedText" Text=""
-                                   FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                    </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE7BA;" FontSize="28"
+                                  Foreground="#F44336"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
+                    </Grid>
                 </Border>
 
+                <!-- Средний риск -->
                 <Border Grid.Column="3"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1" CornerRadius="8" Padding="20">
-                    <StackPanel Spacing="8">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="📊" FontSize="20"/>
-                            <TextBlock Text="Средний риск" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <TextBlock Text="Средний риск" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock x:Name="AvgRiskText" Text="—" FontSize="32" FontWeight="Bold"/>
+                            <ProgressBar x:Name="AvgRiskBar" Minimum="0" Maximum="100" Height="6"
+                                         CornerRadius="3"/>
                         </StackPanel>
-                        <TextBlock x:Name="AvgRiskText" Text="—" FontSize="32" FontWeight="Bold"/>
-                        <ProgressBar x:Name="AvgRiskBar" Minimum="0" Maximum="100" Height="6"
-                                     CornerRadius="3"/>
-                    </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE9D9;" FontSize="28"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
+                    </Grid>
                 </Border>
             </Grid>
 
-            <!-- Строка 2: счета и контрагенты -->
-            <Grid Grid.Row="2" ColumnSpacing="16">
+            <!-- Строка 2 -->
+            <Grid ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -111,17 +157,18 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Spacing="8">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="🏦" FontSize="20"/>
-                                <TextBlock Text="Счета" FontWeight="SemiBold"/>
-                            </StackPanel>
+                            <TextBlock Text="Счета" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             <TextBlock x:Name="TotalAccountsText" Text="—" FontSize="32" FontWeight="Bold"
                                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="ActiveAccountsText" FontSize="12" Foreground="#4CAF50"/>
+                                <TextBlock x:Name="FrozenAccountsText" FontSize="12" Foreground="#FF9800"/>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-                            <TextBlock x:Name="ActiveAccountsText" FontSize="13" Foreground="#4CAF50"/>
-                            <TextBlock x:Name="FrozenAccountsText" FontSize="13" Foreground="#FF9800"/>
-                        </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE8C7;" FontSize="28"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
                     </Grid>
                 </Border>
 
@@ -135,43 +182,66 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Spacing="8">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="🏢" FontSize="20"/>
-                                <TextBlock Text="Контрагенты" FontWeight="SemiBold"/>
-                            </StackPanel>
+                            <TextBlock Text="Контрагенты" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             <TextBlock x:Name="TotalCounterpartiesText" Text="—" FontSize="32" FontWeight="Bold"
                                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock x:Name="BlacklistedText" FontSize="12" Foreground="#F44336"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-                            <TextBlock x:Name="BlacklistedText" FontSize="13" Foreground="#F44336"/>
-                        </StackPanel>
+                        <FontIcon Grid.Column="1" Glyph="&#xE731;" FontSize="28"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Top" Opacity="0.4"/>
                     </Grid>
                 </Border>
             </Grid>
 
             <!-- Распределение рисков -->
-            <Border Grid.Row="3"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="24">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="Распределение рисков" FontSize="18" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE9D9;" FontSize="18"
+                                  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                        <TextBlock Text="Распределение рисков" FontSize="18" FontWeight="SemiBold"/>
+                    </StackPanel>
                     <StackPanel x:Name="RiskBarsPanel" Spacing="10"/>
                 </StackPanel>
             </Border>
 
             <!-- Последние транзакции -->
-            <Border Grid.Row="4"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="24">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="Последние транзакции" FontSize="18" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE8AB;" FontSize="18"
+                                  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                        <TextBlock Text="Последние транзакции" FontSize="18" FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <Grid Padding="8,8"
+                          Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                          CornerRadius="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="90"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="ID" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="Отправитель" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="2" Text="Сумма" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="3" Text="Тип" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <TextBlock Grid.Column="4" Text="Риск" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                    </Grid>
+
                     <ListView x:Name="RecentTransactionsList"
                               SelectionMode="None" IsItemClickEnabled="False">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Padding="8,12" ColumnSpacing="12">
+                                <Grid Padding="8,10" ColumnSpacing="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="*"/>
@@ -181,18 +251,18 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="{Binding IdText}"
-                                               VerticalAlignment="Center"
+                                               VerticalAlignment="Center" FontSize="13"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     <TextBlock Grid.Column="1" Text="{Binding SenderName}"
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center" FontSize="13"/>
                                     <TextBlock Grid.Column="2" Text="{Binding AmountFormatted}"
-                                               VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                               VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold"/>
                                     <TextBlock Grid.Column="3" Text="{Binding TransactionType}"
-                                               VerticalAlignment="Center"
+                                               VerticalAlignment="Center" FontSize="13"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     <Border Grid.Column="4"
                                             Background="{Binding RiskBackground}"
-                                            CornerRadius="4" Padding="8,4"
+                                            CornerRadius="4" Padding="8,3"
                                             VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding RiskLevel}" FontSize="11"
                                                    Foreground="{Binding RiskForeground}"/>
@@ -203,6 +273,6 @@
                     </ListView>
                 </StackPanel>
             </Border>
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 </Page>

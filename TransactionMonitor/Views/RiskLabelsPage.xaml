@@ -12,19 +12,21 @@
         </Grid.RowDefinitions>
 
         <!-- Заголовок -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <StackPanel Spacing="4" HorizontalAlignment="Left">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Spacing="4">
                 <TextBlock Text="Метки риска" FontSize="32" FontWeight="Bold"/>
                 <TextBlock Text="Управление метками и тегами для транзакций"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-            <Button x:Name="AddButton"
-                    Content="➕ Новая метка"
+            <Button Grid.Column="1" Content="Новая метка"
                     Click="Add_Click"
                     VerticalAlignment="Center"
-                    Margin="32,0,0,0"
                     Style="{StaticResource AccentButtonStyle}"/>
-        </StackPanel>
+        </Grid>
 
         <!-- Статистика -->
         <Grid Grid.Row="1" ColumnSpacing="16">
@@ -117,10 +119,14 @@
 
                         <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="4"
                                     VerticalAlignment="Center">
-                            <Button Content="✏️" Click="Edit_Click" Tag="{Binding}"
-                                    Padding="8,4" Background="Transparent"/>
-                            <Button Content="🗑️" Click="Delete_Click" Tag="{Binding}"
-                                    Padding="8,4" Background="Transparent"/>
+                            <Button Click="Edit_Click" Tag="{Binding}"
+                                    Padding="6" Background="Transparent">
+                                <FontIcon Glyph="&#xE70F;" FontSize="14"/>
+                            </Button>
+                            <Button Click="Delete_Click" Tag="{Binding}"
+                                    Padding="6" Background="Transparent">
+                                <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="#F44336"/>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

@@ -187,7 +187,7 @@ namespace TransactionMonitor.Views
             var data = _db.GetTopClients();
             int max = data.Count > 0 ? data.Max(d => d.TxCount) : 1;
 
-            var medals = new string[] { "🥇", "🥈", "🥉", "4.", "5." };
+            var medals = new string[] { "1.", "2.", "3.", "4.", "5." };
 
             for (int i = 0; i < data.Count; i++)
             {
