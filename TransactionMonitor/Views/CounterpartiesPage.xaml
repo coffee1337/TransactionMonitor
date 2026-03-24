@@ -21,7 +21,7 @@
                 <TextBlock Text="Управление контрагентами и их риск-профилем"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="Добавить контрагента"
+            <Button Grid.Column="1" x:Name="AddCounterpartyButton" Content="Добавить контрагента"
                     Click="AddCounterparty_Click"
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"/>

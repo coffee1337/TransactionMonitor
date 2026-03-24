@@ -32,6 +32,8 @@ namespace TransactionMonitor.Views
             FrozenText.Text = _all.Count(a => a.Status == "Frozen").ToString();
             TotalBalanceText.Text = accounts.Sum(a => a.Balance).ToString("N2") + " RUB";
             CountText.Text = $"Всего: {_all.Count}";
+            AddAccountButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ApplyFilters()

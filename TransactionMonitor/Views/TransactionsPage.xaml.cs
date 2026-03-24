@@ -27,6 +27,8 @@ namespace TransactionMonitor.Views
             _allTransactions = transactions.Select(t => new TransactionViewModel(t)).ToList();
             TransactionsList.ItemsSource = _allTransactions;
             CountText.Text = $"Всего: {_allTransactions.Count}";
+            AddTransactionButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ApplyFilters()

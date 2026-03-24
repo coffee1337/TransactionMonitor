@@ -22,7 +22,7 @@
                 <TextBlock Text="Управление банковскими счетами"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="Добавить счёт"
+            <Button Grid.Column="1" x:Name="AddAccountButton" Content="Добавить счёт"
                     Click="AddAccount_Click"
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"/>

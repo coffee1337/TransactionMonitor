@@ -5,162 +5,169 @@
     Background="Transparent">
 
     <Grid>
-        <!-- Левая панель — декоративная -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="480"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Левая часть с описанием -->
+        <!-- Левая панель -->
         <Border Grid.Column="0"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="0,0,1,0">
-            <StackPanel VerticalAlignment="Center"
+            <StackPanel x:Name="LeftPanel" VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        Spacing="24"
-                        Padding="48">
+                        Spacing="24" Padding="48" Opacity="0">
+                <StackPanel.RenderTransform>
+                    <TranslateTransform x:Name="LeftPanelTranslate"/>
+                </StackPanel.RenderTransform>
+                <StackPanel.Resources>
+                    <Storyboard x:Name="LeftFadeIn">
+                        <DoubleAnimation Storyboard.TargetName="LeftPanel"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0" To="1" Duration="0:0:0.6"/>
+                        <DoubleAnimation Storyboard.TargetName="LeftPanelTranslate"
+                            Storyboard.TargetProperty="X"
+                            From="-30" To="0" Duration="0:0:0.6">
+                            <DoubleAnimation.EasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </StackPanel.Resources>
 
-                <Border Width="80" Height="80"
-                        CornerRadius="20"
+                <Border Width="72" Height="72" CornerRadius="16"
                         HorizontalAlignment="Left"
                         Background="{ThemeResource AccentAAFillColorDefaultBrush}">
-                    <TextBlock Text="🛡️" FontSize="40"
-                               Padding="13,11,0,0"/>
+                    <FontIcon Glyph="&#xE9D9;" FontSize="32"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                 </Border>
 
-                <TextBlock Text="TransactionMonitor"
-                           FontSize="36" FontWeight="Bold"
-                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <StackPanel Spacing="8">
+                    <TextBlock Text="TransactionMonitor"
+                               FontSize="34" FontWeight="Bold"/>
+                    <TextBlock Text="Система мониторинга денежных&#x0a;транзакций с модулем&#x0a;машинного обучения"
+                               FontSize="15" LineHeight="26"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
 
-                <TextBlock Text="Система мониторинга денежных&#x0a;транзакций с модулем&#x0a;машинного обучения"
-                           FontSize="16"
-                           LineHeight="28"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-
-                <StackPanel Spacing="16" Margin="0,16,0,0">
-
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Border Width="36" Height="36" CornerRadius="8"
+                <StackPanel Spacing="16" Margin="0,8,0,0">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <Border Width="40" Height="40" CornerRadius="10"
                                 Background="{ThemeResource SubtleFillColorSecondaryBrush}">
-                            <TextBlock Text="📊" FontSize="18"
-                                       Padding="6,5,0,0"/>
+                            <FontIcon Glyph="&#xE9D9;" FontSize="18"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Аналитика в реальном времени"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock Text="Мониторинг всех транзакций"
-                                       FontSize="12"
+                            <TextBlock Text="Аналитика в реальном времени" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBlock Text="Мониторинг всех транзакций" FontSize="12"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Border Width="36" Height="36" CornerRadius="8"
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <Border Width="40" Height="40" CornerRadius="10"
                                 Background="{ThemeResource SubtleFillColorSecondaryBrush}">
-                            <TextBlock Text="🤖" FontSize="18"
-                                       Padding="6,5,0,0"/>
+                            <FontIcon Glyph="&#xE8A5;" FontSize="18"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="ML-оценка риска"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock Text="Автоматическое выявление угроз"
-                                       FontSize="12"
+                            <TextBlock Text="ML-оценка риска" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBlock Text="Автоматическое выявление угроз" FontSize="12"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Border Width="36" Height="36" CornerRadius="8"
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <Border Width="40" Height="40" CornerRadius="10"
                                 Background="{ThemeResource SubtleFillColorSecondaryBrush}">
-                            <TextBlock Text="👥" FontSize="18"
-                                       Padding="6,2,0,0"/>
+                            <FontIcon Glyph="&#xE77B;" FontSize="18"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Ролевой доступ"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock Text="Администратор, аналитик, оператор"
-                                       FontSize="12"
+                            <TextBlock Text="Ролевой доступ" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBlock Text="Администратор, аналитик, оператор" FontSize="12"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
-
                 </StackPanel>
             </StackPanel>
         </Border>
 
-        <!-- Правая часть — форма входа -->
+        <!-- Правая панель — форма -->
         <Grid Grid.Column="1">
-            <StackPanel VerticalAlignment="Center"
-                        Padding="48"
-                        Spacing="24">
+            <StackPanel x:Name="RightPanel" VerticalAlignment="Center"
+                        Padding="48" Spacing="24" Opacity="0">
+                <StackPanel.RenderTransform>
+                    <TranslateTransform x:Name="RightPanelTranslate"/>
+                </StackPanel.RenderTransform>
+                <StackPanel.Resources>
+                    <Storyboard x:Name="RightFadeIn">
+                        <DoubleAnimation Storyboard.TargetName="RightPanel"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0" To="1" Duration="0:0:0.5"
+                            BeginTime="0:0:0.2"/>
+                        <DoubleAnimation Storyboard.TargetName="RightPanelTranslate"
+                            Storyboard.TargetProperty="Y"
+                            From="20" To="0" Duration="0:0:0.5"
+                            BeginTime="0:0:0.2">
+                            <DoubleAnimation.EasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </StackPanel.Resources>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Добро пожаловать"
-                               FontSize="28" FontWeight="Bold"
-                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                    <TextBlock Text="Добро пожаловать" FontSize="28" FontWeight="Bold"/>
                     <TextBlock Text="Введите данные для входа в систему"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                 </StackPanel>
 
                 <StackPanel Spacing="16">
-
                     <StackPanel Spacing="6">
                         <TextBlock Text="Логин" FontWeight="SemiBold" FontSize="13"/>
-                        <TextBox x:Name="UsernameBox"
-                                 PlaceholderText="Введите логин"
-                                 Height="44"
-                                 Padding="10,10,0,0"
-                                 KeyDown="Input_KeyDown"/>
+                        <TextBox x:Name="UsernameBox" PlaceholderText="Введите логин"
+                                 Height="44" Padding="10,10,0,0" KeyDown="Input_KeyDown"/>
                     </StackPanel>
 
                     <StackPanel Spacing="6">
                         <TextBlock Text="Пароль" FontWeight="SemiBold" FontSize="13"/>
-                        <PasswordBox x:Name="PasswordBox"
-                                     PlaceholderText="Введите пароль"
-                                     Height="44"
-                                     Padding="10,10,0,0"
-                                     KeyDown="Input_KeyDown"/>
+                        <PasswordBox x:Name="PasswordBox" PlaceholderText="Введите пароль"
+                                     Height="44" Padding="10,10,0,0" KeyDown="Input_KeyDown"/>
                     </StackPanel>
 
-                    <!-- Ошибка -->
-                    <Border x:Name="ErrorBorder"
-                            Visibility="Collapsed"
+                    <Border x:Name="ErrorBorder" Visibility="Collapsed"
                             Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                             BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
-                            BorderThickness="1"
-                            CornerRadius="6"
-                            Padding="12,10">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="⚠️" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="ErrorText"
-                                       Text="Неверный логин или пароль"
+                            BorderThickness="1" CornerRadius="6" Padding="12,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE7BA;" FontSize="16"
+                                      Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                            <TextBlock x:Name="ErrorText" Text="Неверный логин или пароль"
                                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
 
-                    <Button Content="Войти в систему"
-                            Click="Login_Click"
+                    <Button Content="Войти в систему" Click="Login_Click"
                             HorizontalAlignment="Stretch"
                             Style="{StaticResource AccentButtonStyle}"
-                            Height="44"
-                            FontSize="14"/>
+                            Height="44" FontSize="14"/>
                 </StackPanel>
 
-                <!-- Подсказки аккаунтов -->
                 <Border Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="16">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Демо-аккаунты"
-                                   FontWeight="SemiBold"
-                                   FontSize="12"
+                        BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Демо-аккаунты" FontWeight="SemiBold" FontSize="12"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
-                        <Grid ColumnSpacing="8">
+                        <Grid ColumnSpacing="10" RowSpacing="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -172,51 +179,34 @@
                             </Grid.RowDefinitions>
 
                             <Border Grid.Row="0" Grid.Column="0"
-                                    Background="#3D1A1A"
-                                    CornerRadius="3" Padding="6,2">
-                                <TextBlock Text="Админ" FontSize="11"
-                                           Padding="8,0,0,2"
-                                           Foreground="#FF6B6B"/>
+                                    Background="#3D1A1A" CornerRadius="4" Padding="8,3">
+                                <TextBlock Text="Админ" FontSize="11" Foreground="#FF6B6B"/>
                             </Border>
                             <TextBlock Grid.Row="0" Grid.Column="1"
-                                       Text="admin / admin123"
-                                       FontSize="12" FontFamily="Consolas"
-                                       VerticalAlignment="Center"
+                                       Text="admin / admin123" FontSize="12"
+                                       FontFamily="Consolas" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                             <Border Grid.Row="1" Grid.Column="0"
-                                    Margin="0,6,0,0"
-                                    Background="#3D3200"
-                                    CornerRadius="3" Padding="6,2">
-                                <TextBlock Text="Аналитик" FontSize="11"
-                                           Padding="1,0,0,2"
-                                           Foreground="#FFD700"/>
+                                    Background="#3D3200" CornerRadius="4" Padding="8,3">
+                                <TextBlock Text="Аналитик" FontSize="11" Foreground="#FFD700"/>
                             </Border>
                             <TextBlock Grid.Row="1" Grid.Column="1"
-                                       Margin="0,6,0,0"
-                                       Text="analyst / analyst123"
-                                       FontSize="12" FontFamily="Consolas"
-                                       VerticalAlignment="Center"
+                                       Text="analyst / analyst123" FontSize="12"
+                                       FontFamily="Consolas" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                             <Border Grid.Row="2" Grid.Column="0"
-                                    Margin="0,6,0,0"
-                                    Background="#1A3D1A"
-                                    CornerRadius="3" Padding="6,2">
-                                <TextBlock Text="Оператор" FontSize="11"
-                                           Padding="1,0,0,2"
-                                           Foreground="#6BFF6B"/>
+                                    Background="#1A3D1A" CornerRadius="4" Padding="8,3">
+                                <TextBlock Text="Оператор" FontSize="11" Foreground="#6BFF6B"/>
                             </Border>
                             <TextBlock Grid.Row="2" Grid.Column="1"
-                                       Margin="0,6,0,0"
-                                       Text="operator / operator123"
-                                       FontSize="12" FontFamily="Consolas"
-                                       VerticalAlignment="Center"
+                                       Text="operator / operator123" FontSize="12"
+                                       FontFamily="Consolas" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </Grid>
                     </StackPanel>
                 </Border>
-
             </StackPanel>
         </Grid>
     </Grid>

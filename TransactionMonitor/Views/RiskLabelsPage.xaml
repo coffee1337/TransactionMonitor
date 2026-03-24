@@ -22,7 +22,7 @@
                 <TextBlock Text="Управление метками и тегами для транзакций"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="Новая метка"
+            <Button Grid.Column="1" x:Name="AddLabelButton" Content="Новая метка"
                     Click="Add_Click"
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"/>
@@ -124,7 +124,8 @@
                                 <FontIcon Glyph="&#xE70F;" FontSize="14"/>
                             </Button>
                             <Button Click="Delete_Click" Tag="{Binding}"
-                                    Padding="6" Background="Transparent">
+                                    Padding="6" Background="Transparent"
+                                    Visibility="{Binding DeleteVisible}">
                                 <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="#F44336"/>
                             </Button>
                         </StackPanel>

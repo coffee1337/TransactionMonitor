@@ -2,6 +2,8 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using System.Collections.Generic;
+using System.Linq;
 using TransactionMonitor.Models;
 using TransactionMonitor.Services;
 
@@ -9,12 +11,16 @@ namespace TransactionMonitor.Views
 {
     public sealed partial class MainShellPage : Page
     {
+        private readonly DatabaseService _db = new DatabaseService();
+        private List<AlertItem> _alerts = new();
+
         public MainShellPage()
         {
             this.InitializeComponent();
             SetupUser();
             ContentFrame.Navigate(typeof(DashboardPage));
             NavView.SelectedItem = NavView.MenuItems[0];
+            LoadAlerts();
         }
 
         private void SetupUser()
@@ -40,6 +46,75 @@ namespace TransactionMonitor.Views
                 UserRole.Operator => new SolidColorBrush(ColorHelper.FromArgb(255, 100, 220, 100)),
                 _ => new SolidColorBrush(ColorHelper.FromArgb(255, 180, 180, 180))
             };
+        }
+
+        private void LoadAlerts()
+        {
+            _alerts = _db.GetAlerts();
+
+            AlertsPanel.Children.Clear();
+            AlertsPanel.Visibility = _alerts.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+            if (_alerts.Count > 0)
+            {
+                AlertBadge.Value = _alerts.Count;
+                AlertBadge.Visibility = Visibility.Visible;
+                AlertIcon.Foreground = new SolidColorBrush(ColorHelper.FromArgb(255, 244, 67, 54));
+            }
+            else
+            {
+                AlertBadge.Visibility = Visibility.Collapsed;
+            }
+
+            int shown = 0;
+            foreach (var alert in _alerts.Take(3))
+            {
+                var bar = new InfoBar
+                {
+                    IsOpen = true,
+                    IsClosable = true,
+                    Severity = alert.RiskLevel == "Critical" ? InfoBarSeverity.Error : InfoBarSeverity.Warning,
+                    Title = $"Транзакция #{alert.TransactionID} — {alert.RiskLevel}",
+                    Message = $"{alert.ClientName} | {alert.Amount:N0} RUB | Риск: {(alert.RiskScore * 100):F0}% | {alert.ScoredAt:dd.MM.yyyy HH:mm}"
+                };
+
+                var reviewBtn = new Button
+                {
+                    Content = "Проверено",
+                    Tag = alert.ScoreID,
+                    Margin = new Thickness(0, 4, 0, 0)
+                };
+                reviewBtn.Click += ReviewAlert_Click;
+
+                if (SessionService.CanCreate)
+                    bar.ActionButton = reviewBtn;
+
+                bar.Closed += (s, e) => { };
+
+                AlertsPanel.Children.Add(bar);
+                shown++;
+            }
+
+            if (_alerts.Count > 3)
+            {
+                var moreText = new TextBlock
+                {
+                    Text = $"... и ещё {_alerts.Count - 3} непроверенных",
+                    Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                    FontSize = 12,
+                    Margin = new Thickness(12, 4, 0, 4)
+                };
+                AlertsPanel.Children.Add(moreText);
+            }
+        }
+
+        private void ReviewAlert_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is int scoreId)
+            {
+                _db.MarkAsReviewed(scoreId, "Проверено аналитиком");
+                LoadAlerts();
+            }
         }
 
         private void NavView_SelectionChanged(NavigationView sender,
@@ -77,10 +152,6 @@ namespace TransactionMonitor.Views
                     ContentFrame.Navigate(typeof(RiskLabelsPage));
                     PageTitle.Text = "Метки риска";
                     break;
-                case "reports":
-                    ContentFrame.Navigate(typeof(ReportsPage));
-                    PageTitle.Text = "Отчёты";
-                    break;
                 case "calculator":
                     ContentFrame.Navigate(typeof(RiskCalculatorPage));
                     PageTitle.Text = "ML-калькулятор";
@@ -88,6 +159,15 @@ namespace TransactionMonitor.Views
                 case "charts":
                     ContentFrame.Navigate(typeof(ChartsPage));
                     PageTitle.Text = "Графики";
+                    break;
+                case "reports":
+                    ContentFrame.Navigate(typeof(ReportsPage));
+                    PageTitle.Text = "Отчёты";
+                    break;
+                case "alerts":
+                    LoadAlerts();
+                    ContentFrame.Navigate(typeof(RiskScoresPage));
+                    PageTitle.Text = "Оценки риска";
                     break;
                 case "logout":
                     SessionService.Logout();

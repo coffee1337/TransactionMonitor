@@ -9,8 +9,8 @@ namespace TransactionMonitor.Services
 {
     public class DatabaseService
     {
-        private readonly String _connectionString =
-            "Server=USER\\SQLEXPRESS;Database=TransactionMonitoring;Trusted_Connection=True;TrustServerCertificate=True;";
+        public static string ConnectionString { get; } = @"Server=USER\SQLEXPRESS;Database=TransactionMonitoring;Trusted_Connection=True;TrustServerCertificate=True;";
+        private readonly string _connectionString = ConnectionString;
 
         public List<Client> GetClients()
         {
@@ -269,21 +269,58 @@ namespace TransactionMonitor.Services
             var input = new RiskInput
             {
                 Amount = amount,
-                TransactionHour = DateTime.Now.Hour
+                TransactionHour = DateTime.Now.Hour,
+                SenderAccountId = senderAccountId,
+                CounterpartyId = counterpartyId,
+                TransactionType = transactionType
             };
+
+            if (counterpartyId.HasValue)
+            {
+                var cpCmd = new SqlCommand(
+                    "SELECT RiskLevel, IsBlacklisted FROM Counterparties WHERE CounterpartyID = @id", connection);
+                cpCmd.Parameters.AddWithValue("@id", counterpartyId.Value);
+                using var cpReader = cpCmd.ExecuteReader();
+                if (cpReader.Read())
+                {
+                    input.CounterpartyRiskLevel = cpReader.GetString(0);
+                    input.IsCounterpartyBlacklisted = cpReader.GetBoolean(1);
+                }
+            }
+
+            var clientCmd = new SqlCommand(
+                "SELECT c.ScoringScore, c.IsBlocked FROM Clients c JOIN Accounts a ON a.ClientID = c.ClientID WHERE a.AccountID = @id", connection);
+            clientCmd.Parameters.AddWithValue("@id", senderAccountId);
+            using (var clReader = clientCmd.ExecuteReader())
+            {
+                if (clReader.Read())
+                {
+                    input.ClientScoringScore = clReader.GetDouble(0);
+                    input.IsClientBlocked = clReader.GetBoolean(1);
+                }
+            }
+
+            var freqCmd = new SqlCommand(
+                "SELECT COUNT(*) FROM Transactions WHERE SenderAccountID = @id AND TransactionDate >= DATEADD(HOUR, -24, GETDATE())", connection);
+            freqCmd.Parameters.AddWithValue("@id", senderAccountId);
+            input.TransactionsLast24h = (int)freqCmd.ExecuteScalar();
+
             var risk = calculator.Calculate(input);
 
             // Сохраняем риск-скор
             var riskCmd = new SqlCommand(@"
         INSERT INTO RiskScores
-            (TransactionID, RiskScore, RiskLevel, ModelVersion, ScoredAt, IsFraud)
+            (TransactionID, RiskScore, RiskLevel, ModelVersion, FeatureVectorJSON, ScoredAt, IsFraud)
         VALUES
-            (@txId, @score, @level, 'RuleEngine_v1.0', GETDATE(), 0)",
+            (@txId, @score, @level, @model, @features, GETDATE(), @fraud)",
                 connection);
 
             riskCmd.Parameters.AddWithValue("@txId", newId);
             riskCmd.Parameters.AddWithValue("@score", risk.Score);
             riskCmd.Parameters.AddWithValue("@level", risk.Level);
+            riskCmd.Parameters.AddWithValue("@model", risk.ModelVersion);
+            riskCmd.Parameters.AddWithValue("@features", risk.FeatureVectorJson ?? "{}");
+            riskCmd.Parameters.AddWithValue("@fraud", risk.Score >= 0.70);
             riskCmd.ExecuteNonQuery();
 
             return newId;
@@ -524,6 +561,163 @@ namespace TransactionMonitor.Services
             cmd.Parameters.AddWithValue("@country", country);
 
             return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+        public int RescanAllTransactions()
+        {
+            int updated = 0;
+            var calculator = new RiskCalculator();
+
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var txCmd = new SqlCommand(@"
+                SELECT t.TransactionID, t.SenderAccountID, t.CounterpartyID,
+                       t.Amount, t.TransactionDate, t.TransactionType
+                FROM Transactions t
+                ORDER BY t.TransactionID", connection);
+
+            var transactions = new List<(int Id, int SenderId, int? CpId, decimal Amount, DateTime Date, string Type)>();
+            using (var reader = txCmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    transactions.Add((
+                        reader.GetInt32(0),
+                        reader.GetInt32(1),
+                        reader.IsDBNull(2) ? null : reader.GetInt32(2),
+                        reader.GetDecimal(3),
+                        reader.GetDateTime(4),
+                        reader.GetString(5)
+                    ));
+                }
+            }
+
+            foreach (var tx in transactions)
+            {
+                var input = new RiskInput
+                {
+                    Amount = tx.Amount,
+                    TransactionHour = tx.Date.Hour,
+                    SenderAccountId = tx.SenderId,
+                    CounterpartyId = tx.CpId,
+                    TransactionType = tx.Type
+                };
+
+                if (tx.CpId.HasValue)
+                {
+                    var cpCmd = new SqlCommand(
+                        "SELECT RiskLevel, IsBlacklisted FROM Counterparties WHERE CounterpartyID = @id", connection);
+                    cpCmd.Parameters.AddWithValue("@id", tx.CpId.Value);
+                    using var cpReader = cpCmd.ExecuteReader();
+                    if (cpReader.Read())
+                    {
+                        input.CounterpartyRiskLevel = cpReader.GetString(0);
+                        input.IsCounterpartyBlacklisted = cpReader.GetBoolean(1);
+                    }
+                }
+
+                var clientCmd = new SqlCommand(
+                    "SELECT c.ScoringScore, c.IsBlocked FROM Clients c JOIN Accounts a ON a.ClientID = c.ClientID WHERE a.AccountID = @id", connection);
+                clientCmd.Parameters.AddWithValue("@id", tx.SenderId);
+                using (var clReader = clientCmd.ExecuteReader())
+                {
+                    if (clReader.Read())
+                    {
+                        input.ClientScoringScore = clReader.GetDouble(0);
+                        input.IsClientBlocked = clReader.GetBoolean(1);
+                    }
+                }
+
+                var freqCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Transactions WHERE SenderAccountID = @id AND TransactionDate BETWEEN DATEADD(HOUR, -24, @date) AND @date", connection);
+                freqCmd.Parameters.AddWithValue("@id", tx.SenderId);
+                freqCmd.Parameters.AddWithValue("@date", tx.Date);
+                input.TransactionsLast24h = (int)freqCmd.ExecuteScalar();
+
+                var risk = calculator.Calculate(input);
+
+                var existsCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM RiskScores WHERE TransactionID = @id", connection);
+                existsCmd.Parameters.AddWithValue("@id", tx.Id);
+                bool exists = (int)existsCmd.ExecuteScalar() > 0;
+
+                if (exists)
+                {
+                    var updateCmd = new SqlCommand(@"
+                        UPDATE RiskScores SET RiskScore=@score, RiskLevel=@level,
+                            ModelVersion=@model, FeatureVectorJSON=@features,
+                            ScoredAt=GETDATE(), IsFraud=@fraud
+                        WHERE TransactionID=@id", connection);
+                    updateCmd.Parameters.AddWithValue("@id", tx.Id);
+                    updateCmd.Parameters.AddWithValue("@score", risk.Score);
+                    updateCmd.Parameters.AddWithValue("@level", risk.Level);
+                    updateCmd.Parameters.AddWithValue("@model", risk.ModelVersion);
+                    updateCmd.Parameters.AddWithValue("@features", risk.FeatureVectorJson ?? "{}");
+                    updateCmd.Parameters.AddWithValue("@fraud", risk.Score >= 0.70);
+                    updateCmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    var insertCmd = new SqlCommand(@"
+                        INSERT INTO RiskScores (TransactionID, RiskScore, RiskLevel, ModelVersion, FeatureVectorJSON, ScoredAt, IsFraud)
+                        VALUES (@id, @score, @level, @model, @features, GETDATE(), @fraud)", connection);
+                    insertCmd.Parameters.AddWithValue("@id", tx.Id);
+                    insertCmd.Parameters.AddWithValue("@score", risk.Score);
+                    insertCmd.Parameters.AddWithValue("@level", risk.Level);
+                    insertCmd.Parameters.AddWithValue("@model", risk.ModelVersion);
+                    insertCmd.Parameters.AddWithValue("@features", risk.FeatureVectorJson ?? "{}");
+                    insertCmd.Parameters.AddWithValue("@fraud", risk.Score >= 0.70);
+                    insertCmd.ExecuteNonQuery();
+                }
+                updated++;
+            }
+            return updated;
+        }
+        public List<AlertItem> GetAlerts()
+        {
+            var list = new List<AlertItem>();
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                SELECT TOP 20 rs.ScoreID, rs.TransactionID, rs.RiskScore, rs.RiskLevel,
+                       rs.ScoredAt, t.Amount, c.FullName
+                FROM RiskScores rs
+                JOIN Transactions t ON t.TransactionID = rs.TransactionID
+                JOIN Accounts a ON a.AccountID = t.SenderAccountID
+                JOIN Clients c ON c.ClientID = a.ClientID
+                WHERE rs.RiskLevel IN ('High','Critical')
+                  AND rs.ReviewedByAnalyst = 0
+                ORDER BY rs.ScoredAt DESC", connection);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new AlertItem
+                {
+                    ScoreID = reader.GetInt32(0),
+                    TransactionID = reader.GetInt32(1),
+                    RiskScore = reader.GetDouble(2),
+                    RiskLevel = reader.GetString(3),
+                    ScoredAt = reader.GetDateTime(4),
+                    Amount = reader.GetDecimal(5),
+                    ClientName = reader.GetString(6)
+                });
+            }
+            return list;
+        }
+        
+        public void MarkAsReviewed(int scoreId, string comment)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var cmd = new SqlCommand(@"
+                UPDATE RiskScores SET ReviewedByAnalyst = 1, AnalystComment = @comment
+                WHERE ScoreID = @id", connection);
+            cmd.Parameters.AddWithValue("@id", scoreId);
+            cmd.Parameters.AddWithValue("@comment", string.IsNullOrEmpty(comment) ? "Проверено" : comment);
+            cmd.ExecuteNonQuery();
         }
     }
 }

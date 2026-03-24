@@ -27,6 +27,8 @@ namespace TransactionMonitor.Views
             _allClients = clients.Select(c => new ClientViewModel(c)).ToList();
             ClientsList.ItemsSource = _allClients;
             CountText.Text = $"Всего: {_allClients.Count}";
+            AddClientButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -30,31 +30,25 @@ namespace TransactionMonitor.Views
 
             var result = _calculator.Calculate(input);
 
-            // Показываем результат
             PlaceholderText.Visibility = Visibility.Collapsed;
             ResultPanel.Visibility = Visibility.Visible;
 
-            // Устанавливаем уровень
-            RiskLevelText.Text = result.LevelEmoji;
+            RiskLevelText.Text = result.LevelDisplay;
 
-            // Цвет бейджа
             RiskLevelBadge.Background = result.Level switch
             {
-                "Low" => new SolidColorBrush(ColorHelper.FromArgb(60, 40, 167, 69)),
+                "Low" => new SolidColorBrush(ColorHelper.FromArgb(60, 76, 175, 80)),
                 "Medium" => new SolidColorBrush(ColorHelper.FromArgb(60, 255, 193, 7)),
                 "High" => new SolidColorBrush(ColorHelper.FromArgb(60, 255, 140, 0)),
-                "Critical" => new SolidColorBrush(ColorHelper.FromArgb(60, 220, 53, 69)),
+                "Critical" => new SolidColorBrush(ColorHelper.FromArgb(60, 244, 67, 54)),
                 _ => new SolidColorBrush(ColorHelper.FromArgb(60, 128, 128, 128))
             };
 
-            // Прогресс-бар
             RiskProgressBar.Value = result.Score * 100;
             RiskScoreText.Text = $"Скор: {(result.Score * 100):F1}% из 100%";
 
-            // Факторы
-            FactorsList.ItemsSource = result.Factors;
+            FactorsList.ItemsSource = result.FactorDescriptions;
 
-            // Рекомендация
             RecommendationText.Text = result.Level switch
             {
                 "Low" => "Рекомендация: Транзакция безопасна. Можно пропустить автоматически.",

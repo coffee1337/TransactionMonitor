@@ -26,6 +26,8 @@ namespace TransactionMonitor.Views
             _all = _db.GetCounterparties().Select(c => new CounterpartyViewModel(c)).ToList();
             CounterpartiesList.ItemsSource = _all;
             CountText.Text = $"Всего: {_all.Count}";
+            AddCounterpartyButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ApplyFilters()

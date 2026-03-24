@@ -1,3 +1,5 @@
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System;
@@ -30,6 +32,9 @@ namespace TransactionMonitor.Views
             ReviewedText.Text = _all.Count(r => r.ReviewedByAnalyst).ToString();
             CriticalText.Text = _all.Count(r => r.RiskLevel == "Critical").ToString();
             CountText.Text = $"Всего: {_all.Count}";
+
+            RescanButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ApplyFilters()
@@ -53,6 +58,26 @@ namespace TransactionMonitor.Views
         }
 
         private void Filter_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilters();
+
+        private async void Rescan_Click(object sender, RoutedEventArgs e)
+        {
+            RescanButton.IsEnabled = false;
+            ScanProgress.IsActive = true;
+            ScanProgress.Visibility = Visibility.Visible;
+            ScanStatusText.Text = "Сканирование...";
+
+            int count = 0;
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                count = _db.RescanAllTransactions();
+            });
+
+            ScanProgress.IsActive = false;
+            ScanProgress.Visibility = Visibility.Collapsed;
+            ScanStatusText.Text = $"Обновлено: {count}";
+            RescanButton.IsEnabled = true;
+            LoadData();
+        }
     }
 
     public class RiskScoreViewModel
@@ -66,40 +91,43 @@ namespace TransactionMonitor.Views
         public bool ReviewedByAnalyst { get; set; }
         public DateTime ScoredAt { get; set; }
 
+        public string IdText => $"#{ScoreID}";
+        public string TxIdText => $"#{TransactionID}";
         public string ScoreFormatted => (Score * 100).ToString("F0") + "%";
+        public double ScoreValue => Score * 100;
         public string FraudText => IsFraud ? "Да" : "Нет";
-        public string ReviewedText => ReviewedByAnalyst ? "✓ Да" : "— Нет";
+        public string ReviewedText => ReviewedByAnalyst ? "Да" : "Нет";
         public string DateFormatted => ScoredAt.ToString("dd.MM.yyyy");
 
+        public SolidColorBrush RiskBg => RiskLevel switch
+        {
+            "Low" => new SolidColorBrush(ColorHelper.FromArgb(30, 76, 175, 80)),
+            "Medium" => new SolidColorBrush(ColorHelper.FromArgb(30, 255, 193, 7)),
+            "High" => new SolidColorBrush(ColorHelper.FromArgb(30, 255, 152, 0)),
+            "Critical" => new SolidColorBrush(ColorHelper.FromArgb(30, 244, 67, 54)),
+            _ => new SolidColorBrush(ColorHelper.FromArgb(30, 128, 128, 128))
+        };
+
+        public SolidColorBrush RiskFg => RiskLevel switch
+        {
+            "Low" => new SolidColorBrush(ColorHelper.FromArgb(255, 76, 175, 80)),
+            "Medium" => new SolidColorBrush(ColorHelper.FromArgb(255, 255, 193, 7)),
+            "High" => new SolidColorBrush(ColorHelper.FromArgb(255, 255, 152, 0)),
+            "Critical" => new SolidColorBrush(ColorHelper.FromArgb(255, 244, 67, 54)),
+            _ => new SolidColorBrush(ColorHelper.FromArgb(255, 180, 180, 180))
+        };
+
+        public SolidColorBrush FraudBg => IsFraud
+            ? new SolidColorBrush(ColorHelper.FromArgb(30, 244, 67, 54))
+            : new SolidColorBrush(ColorHelper.FromArgb(30, 76, 175, 80));
+
+        public SolidColorBrush FraudFg => IsFraud
+            ? new SolidColorBrush(ColorHelper.FromArgb(255, 244, 67, 54))
+            : new SolidColorBrush(ColorHelper.FromArgb(255, 76, 175, 80));
+
         public SolidColorBrush ReviewedForeground => ReviewedByAnalyst
-            ? new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 100, 220, 100))
-            : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 180, 180, 180));
-
-        public SolidColorBrush FraudBackground => IsFraud
-            ? new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 220, 53, 69))
-            : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 40, 167, 69));
-
-        public SolidColorBrush FraudForeground => IsFraud
-            ? new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 255, 100, 100))
-            : new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 100, 220, 100));
-
-        public SolidColorBrush RiskBackground => RiskLevel switch
-        {
-            "Low" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 40, 167, 69)),
-            "Medium" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 255, 193, 7)),
-            "High" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 255, 140, 0)),
-            "Critical" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 220, 53, 69)),
-            _ => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(40, 128, 128, 128))
-        };
-
-        public SolidColorBrush RiskForeground => RiskLevel switch
-        {
-            "Low" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 100, 220, 100)),
-            "Medium" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 255, 200, 0)),
-            "High" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 255, 140, 0)),
-            "Critical" => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 255, 80, 80)),
-            _ => new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 180, 180, 180))
-        };
+            ? new SolidColorBrush(ColorHelper.FromArgb(255, 76, 175, 80))
+            : new SolidColorBrush(ColorHelper.FromArgb(255, 180, 180, 180));
 
         public RiskScoreViewModel(Models.RiskScore r)
         {

@@ -10,17 +10,18 @@ namespace TransactionMonitor.Views
         public LoginPage()
         {
             this.InitializeComponent();
+            this.Loaded += (s, e) =>
+            {
+                LeftFadeIn.Begin();
+                RightFadeIn.Begin();
+            };
         }
 
-        private void Login_Click(object sender, RoutedEventArgs e)
-        {
-            DoLogin();
-        }
+        private void Login_Click(object sender, RoutedEventArgs e) => DoLogin();
 
         private void Input_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter)
-                DoLogin();
+            if (e.Key == Windows.System.VirtualKey.Enter) DoLogin();
         }
 
         private void DoLogin()

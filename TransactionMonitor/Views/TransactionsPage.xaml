@@ -21,7 +21,7 @@
                 <TextBlock Text="Мониторинг и управление транзакциями"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="Новая транзакция"
+            <Button Grid.Column="1" x:Name="AddTransactionButton" Content="Новая транзакция"
                     Click="AddTransaction_Click"
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"/>

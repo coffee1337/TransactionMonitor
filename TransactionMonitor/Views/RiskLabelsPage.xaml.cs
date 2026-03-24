@@ -25,11 +25,17 @@ namespace TransactionMonitor.Views
         {
             _all = _db.GetRiskLabels().Select(l => new RiskLabelViewModel(l)).ToList();
             LabelsList.ItemsSource = _all;
+            if (!SessionService.CanDelete)
+            {
+                // Кнопки удаления скрываются через ViewModel
+            }
 
             TotalText.Text = _all.Count.ToString();
             HighText.Text = _all.Count(l => l.Severity == "High").ToString();
             MediumText.Text = _all.Count(l => l.Severity == "Medium").ToString();
             LowText.Text = _all.Count(l => l.Severity == "Low").ToString();
+            AddLabelButton.Visibility = SessionService.CanCreate
+                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private bool _dialogOpen = false;
@@ -171,5 +177,7 @@ namespace TransactionMonitor.Views
             Description = l.Description;
             Severity = l.Severity;
         }
+        public Visibility DeleteVisible => SessionService.CanDelete
+            ? Visibility.Visible : Visibility.Collapsed;
     }
 }
