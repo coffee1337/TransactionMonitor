@@ -362,15 +362,22 @@ Restore NuGet dependencies, configure the database connection and run the applic
 
 ### Dashboard
 
-![TransactionMonitor Dashboard](screenshots/dashboard.png)
+<p align="center">
+  <img src="screenshots/dashboard.png" width="800" alt="TransactionMonitor Dashboard">
+</p>
 
 ### Transactions
 
-![Transaction list](screenshots/transactions.png)
+<p align="center">
+  <img src="screenshots/transactions.png" width="800" alt="TransactionMonitor Dashboard">
+</p>
 
 ### Risk Analysis
 
-![Risk analysis](screenshots/risk-analysis.png)
+<p align="center">
+  <img src="screenshots/risk-analysis.png" width="800" alt="TransactionMonitor Dashboard">
+</p>
+
 ---
 
 ## 🔮 Possible Improvements
