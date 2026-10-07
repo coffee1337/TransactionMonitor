@@ -9,8 +9,10 @@ namespace TransactionMonitor.Services
 {
     public class DatabaseService
     {
-        public static string ConnectionString { get; } = @"Server=USER\SQLEXPRESS;Database=TransactionMonitoring;Trusted_Connection=True;TrustServerCertificate=True;";
-        private readonly string _connectionString = ConnectionString;
+        public static string ConnectionString =>
+            Environment.GetEnvironmentVariable("TRANSACTION_MONITOR_DB")
+            ?? throw new InvalidOperationException(
+                "TRANSACTION_MONITOR_DB environment variable is not configured.");
 
         public List<Client> GetClients()
         {
