@@ -362,22 +362,15 @@ Restore NuGet dependencies, configure the database connection and run the applic
 
 ### Dashboard
 
-```markdown
 ![TransactionMonitor Dashboard](screenshots/dashboard.png)
-```
 
 ### Transactions
 
-```markdown
 ![Transaction list](screenshots/transactions.png)
-```
 
 ### Risk Analysis
 
-```markdown
 ![Risk analysis](screenshots/risk-analysis.png)
-```
-
 ---
 
 ## 🔮 Possible Improvements
